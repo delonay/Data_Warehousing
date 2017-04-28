@@ -1,0 +1,76 @@
+
+SELECT { Measures.[Quantity - Tb Transactions],
+         [Measures].[Tb Transactions Count],
+		 Measures.[Price - Tb Transactions] 
+	   }  ON COLUMNS 
+  FROM DS715
+
+
+SELECT NON EMPTY { [Measures].[Price - Tb Transactions], 
+                   [Measures].[Quantity - Tb Transactions] 
+				 } ON COLUMNS,
+				 NON EMPTY {([Tb Supplier].[Name].[Name].ALLMEMBERS *
+				             [Tb Consumer].[Name].[Name].ALLMEMBERS * 
+							 [Tb Product].[Name].[Name].ALLMEMBERS 
+							) 
+				          } ON ROWS FROM DS715
+
+
+SELECT NON EMPTY {[Measures].[Quantity - Tb Transactions],
+                  [Measures].[Tb Transactions Count], 
+				  [Measures].[Price - Tb Transactions] 
+				 } ON COLUMNS,
+       NON EMPTY {[Tb Product].[Name].[Name].ALLMEMBERS 
+				 } ON ROWS 
+  FROM DS715
+ WHERE [Tb Consumer].[State].&[Wisconsin]
+
+
+
+ SELECT NON EMPTY {[Measures].[Quantity - Tb Transactions]
+				 } ON COLUMNS,
+       NON EMPTY {[Tb Supplier].[Name].[Name].ALLMEMBERS 
+				 } ON ROWS 
+  FROM DS715
+ WHERE ([Tb Supplier].[State].&[Wisconsin],
+        [Tb Product].[Name].[Name].&[Milk])
+
+
+
+SELECT NON EMPTY {[Measures].[Quantity - Tb Transactions]
+				 } ON COLUMNS,
+       NON EMPTY {[Tb Supplier].[Name].[Name].ALLMEMBERS 
+				 } ON ROWS 
+  FROM DS715
+ WHERE ([Tb Supplier].[State].&[Wisconsin],
+        [Tb Consumer].[State].&[Illinois],
+        [Tb Product].[Name].[Name].&[Milk])
+
+/*-aggregates by consumers, nulls included and grand total*/
+SELECT {Measures.[Quantity - Tb Transactions],
+        Measures.[Price - Tb Transactions] 
+	   }  ON COLUMNS,
+	   [Tb Consumer].[Name].ALLMEMBERS ON ROWS
+  FROM DS715
+  
+/*-aggregates by consumers, nulls included and grand total NOT included*/
+SELECT {Measures.[Quantity - Tb Transactions],
+        Measures.[Price - Tb Transactions] 
+	   }  ON COLUMNS,
+	   [Tb Consumer].[Name].[Name] ON ROWS
+  FROM DS715
+
+/*-aggregates by consumers, nulls NOT included and grand total NOT included*/
+SELECT NON EMPTY {Measures.[Quantity - Tb Transactions],
+        Measures.[Price - Tb Transactions] 
+	   }  ON COLUMNS,
+	   NON EMPTY  [Tb Consumer].[Name].[Name] ON ROWS
+  FROM DS715
+
+ /*Assignment#5Page	8--aggregates for select consumers*/
+SELECT NON EMPTY { Measures.[Quantity - Tb Transactions], 
+                   Measures.[Price - Tb Transactions]
+				 } ON COLUMNS,
+       NON EMPTY {[Tb Consumer].[Name].[Fisher],
+	              [Tb Consumer].[Name].[Gray],
+				  [Tb Consumer].[Name].[Hammer]} ON ROWS FROM DS715
